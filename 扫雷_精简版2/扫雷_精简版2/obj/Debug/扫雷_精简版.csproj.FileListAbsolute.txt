@@ -1,0 +1,8 @@
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\bin\Debug\扫雷_精简版2.exe.config
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\bin\Debug\扫雷_精简版2.exe
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\bin\Debug\扫雷_精简版2.pdb
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\obj\Debug\扫雷_精简版.Form1.resources
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\obj\Debug\扫雷_精简版.Properties.Resources.resources
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\obj\Debug\扫雷_精简版.csproj.GenerateResource.Cache
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\obj\Debug\扫雷_精简版2.exe
+D:\Net GUI编程(窗体)\扫雷_精简版2\扫雷_精简版2\obj\Debug\扫雷_精简版2.pdb
