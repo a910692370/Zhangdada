@@ -20,6 +20,7 @@ namespace 扫雷_精简版
         private void Form1_Load(object sender, EventArgs e)
         {
             雷场 lc = new 雷场();
+            重玩按钮 cw = new 重玩按钮();
             this.Controls.Add(lc);
         }
     }
