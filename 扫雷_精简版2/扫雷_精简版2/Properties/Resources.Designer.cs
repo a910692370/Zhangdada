@@ -73,6 +73,16 @@ namespace 扫雷_精简版.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap 地雷图标 {
+            get {
+                object obj = ResourceManager.GetObject("地雷图标", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap 扫雷_0 {
             get {
                 object obj = ResourceManager.GetObject("扫雷_0", resourceCulture);
