@@ -9,62 +9,62 @@ using System.Threading;
 
 namespace 扫雷_精简版
 {
-    public enum 方格状态 { 未知,打开,标记,爆炸,疑问 }
-    class 方格 : Button
+    public enum stateGrid { unknown,open,mark,bomb,query }  //未知、打开、标记、爆炸、疑问状态
+    class grid : Button
     {
-        public static int 宽 = 36;
-        public static int 高 = 36;
-        int _横坐标;
-        public int 横坐标
+        public static int width = 36;
+        public static int height = 36;
+        int _x_Coordinate;  //横坐标
+        public int x_Coordinate
         {
-            get { return _横坐标; }
-            set { _横坐标 = value; }
+            get { return _x_Coordinate; }
+            set { _x_Coordinate = value; }
         }
-        int _纵坐标;
-        public int 纵坐标
+        int _y_Coordinate;  //纵坐标
+        public int y_Coordinate
         {
-            get { return _纵坐标; }
-            set { _纵坐标 = value; }
+            get { return _y_Coordinate; }
+            set { _y_Coordinate = value; }
         }
-        Boolean _是不是地雷 = false;
+        Boolean _isMine = false;
 
-        public Boolean 是不是地雷
+        public Boolean isMine
         {
-            get { return _是不是地雷; }
-            set { _是不是地雷 = value; }
+            get { return _isMine; }
+            set { _isMine = value; }
         }
-        int _周围雷数量 = 0;
+        int _roundMineNum = 0;  //周围地雷数量
 
-        public int 周围雷数量
+        public int roundMineNum
         {
-            get { return _周围雷数量; }
-            set { _周围雷数量 = value; }
+            get { return _roundMineNum; }
+            set { _roundMineNum = value; }
         }
-        方格状态 _外观;
+        stateGrid _facade;  //外观状态
 
-        public 方格状态 外观
+        public stateGrid fasade
         {
-            get { return _外观; }
+            get { return _facade; }
             set 
             { 
-                _外观 = value;
+                _facade = value;
                 switch (value)
                 {
-                    case 方格状态.打开:
-                        this.BackgroundImage = Image.FromFile("Images\\扫雷_"+周围雷数量+".jpg");
-                        雷场.打开数量++;
-                        扩散方法(横坐标,纵坐标);
+                    case stateGrid.open:
+                        this.BackgroundImage = Image.FromFile("Images\\扫雷_"+roundMineNum+".jpg");
+                        mineSite.openNum++;
+                        proliferateMethod();
                         break;
-                    case 方格状态.未知:
+                    case stateGrid.unknown:
                         this.BackgroundImage = Image.FromFile("Images\\未知.jpg");
                         break;
-                    case 方格状态.标记:
+                    case stateGrid.mark:
                         this.BackgroundImage = Image.FromFile("Images\\标记.jpg");
                         break;
-                    case 方格状态.爆炸:
+                    case stateGrid.bomb:
                         this.BackgroundImage = Image.FromFile("Images\\被动爆炸.jpg");
                         break;
-                    case 方格状态.疑问:
+                    case stateGrid.query:
                         this.BackgroundImage = Image.FromFile("Images\\问号.jpg");
                         break;
                     default:
@@ -73,92 +73,90 @@ namespace 扫雷_精简版
                 }
             }
         }
-        void 初始化()
+        void initialize()
         {
-            this.Size = new Size(宽, 高);
-            外观 = 方格状态.未知;
+            this.Size = new Size(width, height);
+            fasade = stateGrid.unknown;
         }
-        public 方格()
+        public grid()
         {
-            初始化();
+            initialize();
         }
         /// <summary>
         /// 周围没有雷时，扩散
         /// </summary>
-        /// <param name="横坐标"></param>
-        /// <param name="纵坐标"></param>
-        void 扩散方法(int 横坐标,int 纵坐标)
+        void proliferateMethod()
         {
-            if (周围雷数量 == 0)
+            if (roundMineNum == 0)
             {
                 foreach (Object control in this.Parent.Controls)
                 {
-                    if (control is 方格)
+                    if (control is grid)
                     {
-                        方格 _方格 = (方格)control;
-                        if (_方格.外观 == 方格状态.未知 || _方格.外观 == 方格状态.疑问)
+                        grid _grid = (grid)control;
+                        if (_grid.fasade == stateGrid.unknown || _grid.fasade == stateGrid.query)
                         {
                             try
                             {
-                                if (_方格.横坐标 + 1 == this.横坐标 && _方格.纵坐标 + 1 == this.纵坐标)
+                                if (_grid.x_Coordinate + 1 == this.x_Coordinate && _grid.y_Coordinate + 1 == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 == this.横坐标 && _方格.纵坐标 + 1 == this.纵坐标)
+                                if (_grid.x_Coordinate == this.x_Coordinate && _grid.y_Coordinate + 1 == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 - 1 == this.横坐标 && _方格.纵坐标 + 1 == this.纵坐标)
+                                if (_grid.x_Coordinate - 1 == this.x_Coordinate && _grid.y_Coordinate + 1 == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 + 1 == this.横坐标 && _方格.纵坐标 == this.纵坐标)
+                                if (_grid.x_Coordinate + 1 == this.x_Coordinate && _grid.y_Coordinate == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 - 1 == this.横坐标 && _方格.纵坐标 == this.纵坐标)
+                                if (_grid.x_Coordinate - 1 == this.x_Coordinate && _grid.y_Coordinate == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 + 1 == this.横坐标 && _方格.纵坐标 - 1 == this.纵坐标)
+                                if (_grid.x_Coordinate + 1 == this.x_Coordinate && _grid.y_Coordinate - 1 == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 == this.横坐标 && _方格.纵坐标 - 1 == this.纵坐标)
+                                if (_grid.x_Coordinate == this.x_Coordinate && _grid.y_Coordinate - 1 == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
                             try
                             {
-                                if (_方格.横坐标 - 1 == this.横坐标 && _方格.纵坐标 - 1 == this.纵坐标)
+                                if (_grid.x_Coordinate - 1 == this.x_Coordinate && _grid.y_Coordinate - 1 == this.y_Coordinate)
                                 {
-                                    _方格.外观 = 方格状态.打开;
+                                    _grid.fasade = stateGrid.open;
                                 }
                             }
                             catch { }
@@ -169,125 +167,125 @@ namespace 扫雷_精简版
         }
     }
 
-    class 雷场 : Panel
+    class mineSite : Panel
     {
-        public static Boolean 游戏能不能继续 = true;
-        static int 方格列数 = 10;
-        static int 方格行数 = 10;
-        int 方格间隔 = 1;
-        public static int 标记数量 = 15;
-        int 地雷数量 = 15;
-        public static int 打开数量 = 0;   //判断是否win
-        方格[,] 方格坐标集合 = new 方格[方格列数,方格行数];
+        public static Boolean isGameContinue = true;    //游戏能不能继续
+        static int gridListNum = 10;    //方格行数量
+        static int gridRowNum = 10; //方格列数量
+        int gridInterval = 1;   //方格间隔
+        public static int markNum = 15; //标记数量
+        int mineNum = 15;
+        public static int openNum = 0;   //打开数量,判断是否win
+        grid[,] gridCoordinateGather = new grid[gridListNum,gridRowNum];    //方格坐标集合
 
-        public 雷场()
+        public mineSite()
         {
-            初始化();
+            initialize();
         }
 
-        void 初始化()
+        void initialize()
         {
-            this.Size = new Size((方格.宽 + 方格间隔) * 方格列数 - 方格间隔, (方格.宽 + 方格间隔) * 方格列数 - 方格间隔 + 140);//加上下面重玩按钮和显示信息的140高度
+            this.Size = new Size((grid.width + gridInterval) * gridListNum - gridInterval, (grid.width + gridInterval) * gridListNum - gridInterval + 140);//加上下面重玩按钮和显示信息的140高度
             this.Location = new Point(40,40);//雷场位置
-            生成方格();
-            随机布雷();
-            判断周围雷数量();
-            重玩按钮();
-            显示剩余地雷数量();
-            显示地雷图片();
+            createGrid();
+            randomInstallMine();
+            judgeRoundMineNum();
+            againGameButton();
+            showSurplusMineNum();
+            showMineImage();
         }
 
         /// <summary>
         /// 根据随机生成坐标布雷
         /// </summary>
-        void 随机布雷()
+        void randomInstallMine()
         {
-            int 随机x;
-            int 随机y;
+            int x;
+            int y;
             Random rd = new Random();
-            for (int i = 0; i < 地雷数量; i++)
+            for (int i = 0; i < mineNum; i++)
             {
                 do
                 {
-                    随机x = rd.Next(0, 10);
-                    随机y = rd.Next(0, 10);
-                } while (方格坐标集合[随机x, 随机y].是不是地雷 == true);
-                方格坐标集合[随机x, 随机y].是不是地雷 = true;
+                    x = rd.Next(0, 10);
+                    y = rd.Next(0, 10);
+                } while (gridCoordinateGather[x, y].isMine == true);
+                gridCoordinateGather[x, y].isMine = true;
             }
         }
 
         /// <summary>
-        /// try catch 判断周围类数量
+        /// try catch 判断周围地雷数量
         /// </summary>
-        void 判断周围雷数量()
+        void judgeRoundMineNum()
         {
-            for (int i = 0; i < 方格列数; i++)
+            for (int i = 0; i < gridListNum; i++)
             {
-                for (int j = 0; j < 方格行数; j++)
+                for (int j = 0; j < gridRowNum; j++)
                 {
-                    if (方格坐标集合[i, j].是不是地雷 != true)
+                    if (gridCoordinateGather[i, j].isMine != true)
                     {
                         try
                         {
-                            if (方格坐标集合[i - 1, j - 1].是不是地雷 == true)
+                            if (gridCoordinateGather[i - 1, j - 1].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i, j - 1].是不是地雷 == true)
+                            if (gridCoordinateGather[i, j - 1].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i + 1, j - 1].是不是地雷 == true)
+                            if (gridCoordinateGather[i + 1, j - 1].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i - 1, j].是不是地雷 == true)
+                            if (gridCoordinateGather[i - 1, j].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i + 1, j].是不是地雷 == true)
+                            if (gridCoordinateGather[i + 1, j].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i - 1, j + 1].是不是地雷 == true)
+                            if (gridCoordinateGather[i - 1, j + 1].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i, j + 1].是不是地雷 == true)
+                            if (gridCoordinateGather[i, j + 1].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
                         try
                         {
-                            if (方格坐标集合[i + 1, j + 1].是不是地雷 == true)
+                            if (gridCoordinateGather[i + 1, j + 1].isMine == true)
                             {
-                                方格坐标集合[i, j].周围雷数量++;
+                                gridCoordinateGather[i, j].roundMineNum++;
                             }
                         }
                         catch { }
@@ -295,197 +293,232 @@ namespace 扫雷_精简版
                 }
             }
         }
-        void 生成方格()
+        void createGrid()
         {
-            for (int i = 0; i < 方格列数; i++)
+            for (int i = 0; i < gridListNum; i++)
             {
-                for (int j = 0; j < 方格行数; j++)
+                for (int j = 0; j < gridRowNum; j++)
                 {
-                    方格 tld = new 方格();
-                    tld.Location = new Point((方格.宽 + 方格间隔) * i, (方格.高 + 方格间隔) * j);
-                    tld.MouseDown += 点击事件;
-                    tld.横坐标 = i;
-                    tld.纵坐标 = j;
-                    方格坐标集合[i, j] = tld;
-                    this.Controls.Add(tld);
+                    grid createGrid = new grid();
+                    createGrid.Location = new Point((grid.width + gridInterval) * i, (grid.height + gridInterval) * j);
+                    createGrid.MouseDown += gridClickInsident;
+                    createGrid.x_Coordinate = i;
+                    createGrid.y_Coordinate = j;
+                    gridCoordinateGather[i, j] = createGrid;
+                    this.Controls.Add(createGrid);
                 }
             }
         }
-        void 点击事件(object sender,MouseEventArgs e)
+        /// <summary>
+        /// 方格点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void gridClickInsident(object sender,MouseEventArgs e)
         {
-            方格 fg = (方格)sender;
+            grid fg = (grid)sender;
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (游戏能不能继续 == true)
+                    if (isGameContinue == true)
                     {
-                        if (fg.外观 == 方格状态.未知 || fg.外观 == 方格状态.疑问)
+                        if (fg.fasade == stateGrid.unknown || fg.fasade == stateGrid.query)
                         {
-                            fg.外观 = 方格状态.打开;
-                            爆炸方法(fg);
-                            判断赢();
+                            fg.fasade = stateGrid.open;
+                            bombMethod(fg);
+                            judgeWin();
                         }
                     }
                     break;
                 case MouseButtons.Right:
-                    if (游戏能不能继续 == true)
+                    if (isGameContinue == true)
                     {
-                        if (标记数量 > 0)
+                        if (markNum > 0)
                         {
-                            if (fg.外观 == 方格状态.未知 || fg.外观 == 方格状态.疑问)
+                            if (fg.fasade == stateGrid.unknown || fg.fasade == stateGrid.query)
                             {
-                                fg.外观 = 方格状态.标记;
-                                标记数量--;
-                                更改剩余地雷数量();
+                                fg.fasade = stateGrid.mark;
+                                markNum--;
+                                changeSurplusMineNum();
                             }
-                            else if (fg.外观 == 方格状态.标记)
+                            else if (fg.fasade == stateGrid.mark)
                             {
-                                fg.外观 = 方格状态.疑问;
-                                标记数量++;
-                                更改剩余地雷数量();
+                                fg.fasade = stateGrid.query;
+                                markNum++;
+                                changeSurplusMineNum();
                             }
                             
                         }
                         else
                         {
-                            if (fg.外观 == 方格状态.标记)
+                            if (fg.fasade == stateGrid.mark)
                             {
-                                fg.外观 = 方格状态.疑问;
-                                标记数量++;
-                                更改剩余地雷数量();
+                                fg.fasade = stateGrid.query;
+                                markNum++;
+                                changeSurplusMineNum();
                             }
                         }
                     }
                     break;
             }
         }
-        void 爆炸方法(方格 bomb)
+        /// <summary>
+        /// 爆炸方法
+        /// </summary>
+        /// <param name="bomb"></param>
+        void bombMethod(grid bomb)
         {
-            if (bomb.是不是地雷 == true)
+            if (bomb.isMine == true)
             {
                 try
                 {
-                    foreach (方格 control in this.Controls)
+                    foreach (grid control in this.Controls)
                     {
-                        if (control.是不是地雷 == true)
+                        if (control.isMine == true)
                         {
-                            control.外观 = 方格状态.爆炸;
+                            control.fasade = stateGrid.bomb;
                         }
                     }
                 }
                 catch (Exception) { ;}
-                游戏能不能继续 = false;
+                isGameContinue = false;
                 bomb.BackgroundImage = Image.FromFile("Images\\主动爆炸.jpg");
-                打开数量 = -1;  //最后一个打开是雷时，不判断赢
+                openNum = -1;  //最后一个打开是雷时，不判断赢
                 MessageBox.Show("GameOver!!!游戏结束");
             }
         }
         /// <summary>
         /// 根据打开数量判断是否胜利
         /// </summary>
-        void 判断赢()
+        void judgeWin()
         {
-            if (打开数量 == (方格列数 * 方格行数) - 地雷数量)
+            if (openNum == (gridListNum * gridRowNum) - mineNum)
             {
-                游戏能不能继续 = false;
+                isGameContinue = false;
                 MessageBox.Show("You Win!!!游戏结束");
             }
-        }
-        void 重新这一局()
+        }   
+        /// <summary>
+        /// 重新这一局
+        /// </summary>
+        void againTheGame()
         {
-            初始化变量();
+            initializeVariable();
             foreach (Object control in this.Controls)
             {
-                if (control is 方格)
+                if (control is grid)
                 {
-                    方格 fg = (方格)control;
-                    fg.外观 = 方格状态.未知;
+                    grid fg = (grid)control;
+                    fg.fasade = stateGrid.unknown;
                 }
             }
-            更改剩余地雷数量();
+            changeSurplusMineNum();
         }
-        void 新开下一局()
+        /// <summary>
+        /// 重新下一局
+        /// </summary>
+        void againNextGame()
         {
-            初始化变量();
+            initializeVariable();
             foreach (Object control in this.Controls)
             {
-                if (control is 方格)
+                if (control is grid)
                 {
-                    方格 fg = (方格)control;
-                    fg.外观 = 方格状态.未知;
-                    fg.是不是地雷 = false;
-                    fg.周围雷数量 = 0;
+                    grid fg = (grid)control;
+                    fg.fasade = stateGrid.unknown;
+                    fg.isMine = false;
+                    fg.roundMineNum = 0;
                 }
             }
-            随机布雷();
-            判断周围雷数量();
-            更改剩余地雷数量();
+            randomInstallMine();
+            judgeRoundMineNum();
+            changeSurplusMineNum();
         }
-        void 初始化变量()
+        /// <summary>
+        /// 初始化变量
+        /// </summary>
+        void initializeVariable()
         {
-            游戏能不能继续 = true;
-            标记数量 = 15;
-            打开数量 = 0;
+            isGameContinue = true;
+            markNum = 15;
+            openNum = 0;
         }
-        void 重玩按钮()
+        /// <summary>
+        /// 实例重玩按钮
+        /// </summary>
+        void againGameButton()
         {
-            重玩按钮 cw = new 重玩按钮();
-            cw.MouseDown += 重玩点击事件;
+            againGameButton cw = new againGameButton();
+            cw.MouseDown += againGameClickIncident;
             this.Controls.Add(cw);
         }
-        void 重玩点击事件(object sender, MouseEventArgs e)
+        /// <summary>
+        /// 重玩点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void againGameClickIncident(object sender, MouseEventArgs e)
         {
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    重新这一局();
+                    againTheGame();
                     break;
                 case MouseButtons.Right:
-                    新开下一局();
+                    againNextGame();
                     break;
                 default:
                     break;
             }
         }
-        void 显示剩余地雷数量()
+        /// <summary>
+        /// 显示剩余地雷数量
+        /// </summary>
+        void showSurplusMineNum()
         {
-            显示信息 xs = new 显示信息();
-            xs.Text = 标记数量.ToString();
+            showInformation xs = new showInformation();
+            xs.Text = markNum.ToString();
             xs.Location = new Point(85, 467);
             this.Controls.Add(xs);
         }
-        void 更改剩余地雷数量()
+        /// <summary>
+        /// 更改剩余地雷数量
+        /// </summary>
+        void changeSurplusMineNum()
         {
             foreach (Object control in this.Controls)
             {
-                if (control is 显示信息)
+                if (control is showInformation)
                 {
-                    显示信息 sy = (显示信息)control;
-                    if (标记数量 < 10)
+                    showInformation sy = (showInformation)control;
+                    if (markNum < 10)
                     {
-                        sy.Text = "0" + 标记数量;
+                        sy.Text = "0" + markNum;
                     }
                     else
                     {
-                        sy.Text = 标记数量.ToString();
+                        sy.Text = markNum.ToString();
                     }
                 }
             }
         }
-        void 显示地雷图片()
+        /// <summary>
+        /// 显示地雷图片
+        /// </summary>
+        void showMineImage()
         {
-            地雷图片 dlImg = new 地雷图片();
+            mineImage dlImg = new mineImage();
             this.Controls.Add(dlImg);
         }
     }
 
-    class 重玩按钮 : Button
+    class againGameButton : Button
     {
-        public 重玩按钮()
+        public againGameButton()
         {
-            初始化外观();
+            initialize();
         }
-        void 初始化外观()
+        void initialize()
         {
             this.Size = new Size(170,40);
             this.BackColor = Color.Red;
@@ -494,26 +527,26 @@ namespace 扫雷_精简版
             this.Location = new Point(100,400);
         }
     }
-    class 显示信息 : Label
+    class showInformation : Label
     {
-        public 显示信息()
+        public showInformation()
         {
-            初始化();
+            initialize();
         }
-        void 初始化()
+        void initialize()
         {
             this.Size = new Size(40,25);
             this.Font = new Font("黑体", 20);
             this.BackColor = Color.Red;
         }
     }
-    class 地雷图片 : PictureBox
+    class mineImage : PictureBox
     {
-        public 地雷图片()
+        public mineImage()
         {
-            初始化();
+            initialize();
         }
-        void 初始化()
+        void initialize()
         {
             this.Image = 扫雷_精简版.Properties.Resources.地雷图标;
             this.Size = new Size(54,54);
